@@ -3,6 +3,7 @@ package com.normancoloma.management.port.adapter.rest.exception;
 import com.normancoloma.management.domain.exception.PlayerAlreadyBelongsToTeamException;
 import com.normancoloma.management.domain.exception.PlayerDoesNotExist;
 import com.normancoloma.management.domain.exception.TeamAlreadyExists;
+import com.normancoloma.management.domain.exception.TeamCannotAffordMoreExpenses;
 import com.normancoloma.management.domain.exception.TeamDoesNotExistException;
 import com.normancoloma.management.port.adapter.rest.response.RestErrorResponse;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = {PlayerAlreadyBelongsToTeamException.class, TeamAlreadyExists.class})
+    @ExceptionHandler(value = {PlayerAlreadyBelongsToTeamException.class, TeamAlreadyExists.class, TeamCannotAffordMoreExpenses.class})
     public ResponseEntity<Object> handleInternalServerError(
             Exception ex, WebRequest request) {
 

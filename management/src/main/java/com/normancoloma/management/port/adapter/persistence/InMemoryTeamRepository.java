@@ -22,7 +22,7 @@ public class InMemoryTeamRepository implements TeamRepository {
             singletonList(
                     new Team(UUID.fromString("efa39763-9b1f-4547-aa17-591c811583a1"),
                             "F.C Barcelona", "Spain", new HashSet<>(),
-                            Fund.builder().currency(Currency.EUROS).build())
+                            Fund.builder().quantity(100f).currency(Currency.EUROS).build())
             )
     );
 

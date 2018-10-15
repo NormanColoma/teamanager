@@ -7,4 +7,5 @@ public class PlayerRequest {
     private String name;
     private byte years;
     private byte shirtNumber;
+    private float salary;
 }

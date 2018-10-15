@@ -1,6 +1,7 @@
 package com.normancoloma.management.domain.model.team.player;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Objects;
@@ -8,11 +9,13 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Data
+@Builder
 public class Player {
     private UUID id;
     private String name;
     private byte years;
     private byte shirtNumber;
+    private Salary salary;
 
     public boolean hasShirtNumber(byte shirtNumber) {
         return Objects.equals(this.shirtNumber, shirtNumber);

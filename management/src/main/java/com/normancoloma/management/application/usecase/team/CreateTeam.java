@@ -32,7 +32,7 @@ public class CreateTeam {
                 .id(UUID.randomUUID())
                 .name(name)
                 .country(country)
-                .fund(funds)
+                .funds(funds)
                 .build();
     }
 

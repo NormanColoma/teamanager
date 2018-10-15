@@ -4,6 +4,7 @@ import com.normancoloma.management.domain.exception.PlayerAlreadyBelongsToTeamEx
 import com.normancoloma.management.domain.exception.PlayerDoesNotBelongToGivenTeam;
 import com.normancoloma.management.domain.exception.PlayerDoesNotExist;
 import com.normancoloma.management.domain.exception.ShirtNumberIsAlreadyTakenException;
+import com.normancoloma.management.domain.exception.TeamCannotAffordMoreExpenses;
 import com.normancoloma.management.domain.model.team.player.Player;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Team {
     private String country;
     @Builder.Default
     private Set<Player> players = new HashSet<>();
-    private Fund fund;
+    private Fund funds;
 
     public void releasePlayer(Player player) {
         if (hasPlayerAlready(player)) {
@@ -61,6 +62,17 @@ public class Team {
             throw new PlayerDoesNotBelongToGivenTeam(String.format("Player %s does not belong to team %s", player.getId(), id));
         }
         players.remove(player);
+    }
+
+    public Currency getCurrency() {
+        return funds.getCurrency();
+    }
+
+    public void addExpenses(float expenses) {
+        if (funds.getQuantity() <= expenses) {
+            throw new TeamCannotAffordMoreExpenses(String.format("Team %s cannot afford more expenses", id));
+        }
+        funds.subtract(expenses);
     }
 
     private boolean hasPlayerAlready(Player player) {

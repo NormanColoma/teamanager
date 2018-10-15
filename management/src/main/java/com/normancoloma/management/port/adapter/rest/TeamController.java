@@ -36,7 +36,7 @@ public class TeamController {
 
     @PostMapping(value = "teams/{teamId}/players")
     public TeamResponse addPlayerToTeam(@PathVariable("teamId") UUID teamId, @RequestBody PlayerRequest playerRequest) {
-        Team teamWithPlayerAdded = addPlayerToTeam.execute(playerRequest.getName(), playerRequest.getYears(), playerRequest.getShirtNumber(), teamId);
+        Team teamWithPlayerAdded = addPlayerToTeam.execute(playerRequest.getName(), playerRequest.getYears(), playerRequest.getShirtNumber(), teamId, playerRequest.getSalary());
         return toTeamResponse(teamWithPlayerAdded);
     }
 
@@ -85,7 +85,7 @@ public class TeamController {
                 .name(team.getName())
                 .country(team.getCountry())
                 .players(players)
-                .funds(team.getFund().toString())
+                .funds(team.getFunds().toString())
                 .build();
     }
 }
