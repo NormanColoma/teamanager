@@ -30,6 +30,7 @@ public class Team {
         if (hasPlayerAlready(player)) {
             throw new PlayerAlreadyBelongsToTeamException(String.format("Player %s already belongs to team %s", player.getId(), id));
         }
+        addExpenses(player.getSalary().getQuantity());
         players.add(player);
     }
 
