@@ -28,4 +28,8 @@ public class Player {
     public boolean isSame(String name, byte years) {
         return Objects.equals(this.name, name) && Objects.equals(this.years, years);
     }
+
+    public void changeSalary(float salary) {
+        this.salary.setQuantity(salary);
+    }
 }

@@ -1,11 +1,13 @@
 package com.normancoloma.management.port.adapter.rest;
 
 import com.normancoloma.management.application.usecase.team.AddPlayerToTeam;
+import com.normancoloma.management.application.usecase.team.ChangePlayerSalary;
 import com.normancoloma.management.application.usecase.team.ChangeShirtNumberOfAPlayer;
 import com.normancoloma.management.application.usecase.team.CreateTeam;
 import com.normancoloma.management.application.usecase.team.GetAllTeams;
 import com.normancoloma.management.application.usecase.team.TransferPlayerToTeam;
 import com.normancoloma.management.domain.model.team.Team;
+import com.normancoloma.management.port.adapter.rest.request.ChangePlayerSalaryRequest;
 import com.normancoloma.management.port.adapter.rest.request.ChangeShirtNumberRequest;
 import com.normancoloma.management.port.adapter.rest.request.PlayerRequest;
 import com.normancoloma.management.port.adapter.rest.request.TeamRequest;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -33,25 +36,31 @@ public class TeamController {
     private final GetAllTeams getAllTeams;
     private final ChangeShirtNumberOfAPlayer changeShirtNumberOfAPlayer;
     private final TransferPlayerToTeam transferPlayerToTeam;
+    private final ChangePlayerSalary changePlayerSalary;
+    private final TeamJSONTransformer teamJSONTransformer;
 
-    @PostMapping(value = "teams/{teamId}/players")
-    public TeamResponse addPlayerToTeam(@PathVariable("teamId") UUID teamId, @RequestBody PlayerRequest playerRequest) {
-        Team teamWithPlayerAdded = addPlayerToTeam.execute(playerRequest.getName(), playerRequest.getYears(), playerRequest.getShirtNumber(), teamId, playerRequest.getSalary());
-        return toTeamResponse(teamWithPlayerAdded);
+    @GetMapping(value = "teams")
+    public List<TeamResponse> getAllTeams() {
+       return new ArrayList(teamJSONTransformer.transform(getAllTeams.execute()));
     }
 
     @PostMapping(value = "teams")
     public TeamResponse createTeam(@RequestBody TeamRequest teamRequest) {
         Team teamCreated = createTeam.execute(teamRequest.getName(), teamRequest.getCountry(), teamRequest.getFunds(), teamRequest.getCurrency());
-        return toTeamResponse(teamCreated);
+        return teamJSONTransformer.transform(teamCreated);
     }
 
-    @GetMapping(value = "teams")
-    public List<TeamResponse> getAllTeams() {
-        List<Team> teamsFound = getAllTeams.execute();
-        return teamsFound.stream()
-                .map(this::toTeamResponse)
-                .collect(Collectors.toList());
+    @PostMapping(value = "teams/{teamId}/players")
+    public TeamResponse addPlayerToTeam(@PathVariable("teamId") UUID teamId, @RequestBody PlayerRequest playerRequest) {
+        Team teamWithPlayerAdded = addPlayerToTeam.execute(playerRequest.getName(), playerRequest.getYears(), playerRequest.getShirtNumber(), teamId, playerRequest.getSalary());
+        return teamJSONTransformer.transform(teamWithPlayerAdded);
+    }
+
+    @PostMapping(value = "teams/{teamId}/transfers")
+    public void transferPlayer(@PathVariable("teamId") UUID teamId,
+                               @RequestBody TransferPlayerRequest transferPlayerRequest) {
+
+        transferPlayerToTeam.execute(transferPlayerRequest.getPlayerToBeTransferred(), teamId, transferPlayerRequest.getTeamAcquiringPlayer());
     }
 
     @PutMapping(value = "teams/{teamId}/players/{playerId}/shirtNumbers")
@@ -62,30 +71,10 @@ public class TeamController {
         changeShirtNumberOfAPlayer.execute(teamId, playerId, changeShirtNumberRequest.getNumber());
     }
 
-    @PostMapping(value = "teams/{teamId}/transfers")
-    public void transferPlayer(@PathVariable("teamId") UUID teamId,
-                               @RequestBody TransferPlayerRequest transferPlayerRequest) {
-
-        transferPlayerToTeam.execute(transferPlayerRequest.getPlayerToBeTransferred(), teamId, transferPlayerRequest.getTeamAcquiringPlayer());
-    }
-
-    private TeamResponse toTeamResponse(Team team) {
-        Set<PlayerResponse> players = team.getPlayers().stream()
-                .map(player -> PlayerResponse.builder()
-                        .id(player.getId())
-                        .name(player.getName())
-                        .years(player.getYears())
-                        .shirtNumber(player.getShirtNumber())
-                        .build()
-                )
-                .collect(Collectors.toSet());
-
-        return TeamResponse.builder()
-                .id(team.getId())
-                .name(team.getName())
-                .country(team.getCountry())
-                .players(players)
-                .funds(team.getFunds().toString())
-                .build();
+    @PutMapping(value = "teams/{teamId}/players/{playerId}/salary")
+    public void changePlayerSalary(@PathVariable("teamId") UUID teamId,
+                                   @PathVariable("playerId") UUID playerId,
+                                   @RequestBody ChangePlayerSalaryRequest changePlayerSalaryRequest) {
+        changePlayerSalary.execute(teamId, playerId, changePlayerSalaryRequest.getSalary());
     }
 }
