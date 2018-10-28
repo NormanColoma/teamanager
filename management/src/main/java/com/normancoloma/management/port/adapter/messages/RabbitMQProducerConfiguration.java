@@ -1,23 +1,17 @@
 package com.normancoloma.management.port.adapter.messages;
 
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class RabbitMQProducerConfiguration {
-   /* @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(directExchange);
-    }
-
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory)
-    {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setExchange(directExchange);
-        template.setRoutingKey(routingKey);
-        template.setConnectionFactory(connectionFactory);
-        return template;
-    }*/
+    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        return rabbitTemplate;
+    }
 }
