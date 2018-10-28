@@ -4,6 +4,7 @@ import com.normancoloma.management.domain.exception.TeamDoesNotExistException;
 import com.normancoloma.management.domain.model.team.Team;
 import com.normancoloma.management.domain.model.team.TeamRepository;
 import com.normancoloma.management.domain.model.team.player.Player;
+import com.normancoloma.management.domain.service.DomainEventEmitter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import static java.util.Arrays.asList;
 @Component
 public class TransferPlayerToTeam {
     private final TeamRepository teamRepository;
+    private final DomainEventEmitter domainEventEmitter;
 
     public void execute(UUID playerId, UUID teamIdOfPlayer, UUID teamIdAcquiringPlayer) {
         Team currentTeamOfPlayer = teamRepository.fetch(teamIdOfPlayer)

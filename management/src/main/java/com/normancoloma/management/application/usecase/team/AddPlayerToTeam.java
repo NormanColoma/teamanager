@@ -22,7 +22,6 @@ public class AddPlayerToTeam {
 
         Player player = createPlayerWith(playerName, playerYears, playerShirtNumber, playerSalary, teamFound.getCurrency());
         teamFound.releasePlayer(player);
-        teamFound.addExpenses(playerSalary);
 
         teamRepository.save(teamFound);
 

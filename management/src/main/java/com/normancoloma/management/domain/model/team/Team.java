@@ -6,6 +6,7 @@ import com.normancoloma.management.domain.exception.PlayerDoesNotExist;
 import com.normancoloma.management.domain.exception.ShirtNumberIsAlreadyTakenException;
 import com.normancoloma.management.domain.exception.TeamCannotAffordMoreExpenses;
 import com.normancoloma.management.domain.model.team.player.Player;
+import com.normancoloma.management.domain.service.DomainEventEmitter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -69,7 +70,7 @@ public class Team {
         return funds.getCurrency();
     }
 
-    public void addExpenses(float expenses) {
+    private void addExpenses(float expenses) {
         if (funds.getQuantity() <= expenses) {
             throw new TeamCannotAffordMoreExpenses(String.format("Team %s cannot afford more expenses", id));
         }
