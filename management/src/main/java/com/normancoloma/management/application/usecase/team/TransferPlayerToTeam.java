@@ -4,6 +4,7 @@ import com.normancoloma.management.domain.exception.TeamDoesNotExistException;
 import com.normancoloma.management.domain.model.team.Team;
 import com.normancoloma.management.domain.model.team.TeamRepository;
 import com.normancoloma.management.domain.model.team.player.Player;
+import com.normancoloma.management.domain.model.team.player.PlayerTransferred;
 import com.normancoloma.management.domain.service.DomainEventEmitter;
 import com.normancoloma.management.port.adapter.messages.CustomMessage;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class TransferPlayerToTeam {
         newTeamOfPlayer.releasePlayer(playerToBeTransferred);
 
         teamRepository.saveAll(asList(currentTeamOfPlayer, newTeamOfPlayer));
-        rabbitMQPlayerTransferredProducer.emit(new CustomMessage(teamIdAcquiringPlayer, playerToBeTransferred.getSalary().getQuantity()));
+        rabbitMQPlayerTransferredProducer.emit(PlayerTransferred.builder()
+                .playerId(playerId)
+                .teamId(teamIdAcquiringPlayer)
+                .quantity(playerToBeTransferred.getSalary().getQuantity())
+                .build());
     }
 }

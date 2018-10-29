@@ -10,11 +10,15 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Component
-public class PlayerTransferred {
+public class GenerateTransferTransaction {
     private final TransactionRepository transactionRepository;
 
-    public void execute(UUID playerId, UUID teamId, float quantity) {
-        Transaction transaction = createTransactionWith(playerId, teamId, quantity);
+    public void execute(GenerateTransferTransactionCommand generateTransferTransactionCommand) {
+        Transaction transaction = createTransactionWith(
+                generateTransferTransactionCommand.getPlayerId(),
+                generateTransferTransactionCommand.getTeamId(),
+                generateTransferTransactionCommand.getQuantity()
+        );
         transactionRepository.save(transaction);
     }
 
