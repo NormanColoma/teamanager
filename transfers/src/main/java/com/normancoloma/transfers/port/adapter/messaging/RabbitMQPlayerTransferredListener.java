@@ -1,11 +1,9 @@
 package com.normancoloma.transfers.port.adapter.messaging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.normancoloma.transfers.application.usecase.GenerateTransferTransaction;
 import com.normancoloma.transfers.application.usecase.GenerateTransferTransactionCommand;
-import com.normancoloma.transfers.domain.model.transaction.Transaction;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -17,10 +15,9 @@ import org.springframework.stereotype.Component;
 public class RabbitMQPlayerTransferredListener {
     private final GenerateTransferTransaction generateTransferTransaction;
 
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "player.transfers"),
-            exchange = @Exchange(value = "player.events"),
-            key = "player.transferred")
+    @RabbitListener(
+            bindings = @QueueBinding(value = @Queue(value = "player.transfers"),
+            exchange = @Exchange(value = "player.events", type = ExchangeTypes.FANOUT))
     )
     public void receiveMessage(GenerateTransferTransactionCommand message)
     {
