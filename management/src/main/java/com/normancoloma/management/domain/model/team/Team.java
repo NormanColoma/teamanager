@@ -6,7 +6,8 @@ import com.normancoloma.management.domain.exception.PlayerDoesNotExist;
 import com.normancoloma.management.domain.exception.ShirtNumberIsAlreadyTakenException;
 import com.normancoloma.management.domain.exception.TeamCannotAffordMoreExpenses;
 import com.normancoloma.management.domain.model.team.player.Player;
-import com.normancoloma.management.domain.service.DomainEventEmitter;
+import com.normancoloma.management.domain.model.team.player.PlayerTransferred;
+import com.normancoloma.management.domain.model.team.player.Salary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -64,6 +65,14 @@ public class Team {
             throw new PlayerDoesNotBelongToGivenTeam(String.format("Player %s does not belong to team %s", player.getId(), id));
         }
         players.remove(player);
+
+        DomainEventEmitter
+            .instance()
+            .publish(PlayerTransferred.builder()
+                    .playerId(player.getId())
+                    .quantity(player.salary())
+                    .teamId(id)
+                    .build());
     }
 
     public Currency getCurrency() {

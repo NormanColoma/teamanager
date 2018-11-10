@@ -1,12 +1,12 @@
 package com.normancoloma.management.application.usecase.team;
 
+import com.normancoloma.management.application.event.EventSubscriber;
 import com.normancoloma.management.domain.exception.TeamDoesNotExistException;
+import com.normancoloma.management.domain.model.team.DomainEventEmitter;
 import com.normancoloma.management.domain.model.team.Team;
 import com.normancoloma.management.domain.model.team.TeamRepository;
 import com.normancoloma.management.domain.model.team.player.Player;
 import com.normancoloma.management.domain.model.team.player.PlayerTransferred;
-import com.normancoloma.management.domain.service.DomainEventEmitter;
-import com.normancoloma.management.port.adapter.messages.CustomMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +18,8 @@ import static java.util.Arrays.asList;
 @Component
 public class TransferPlayerToTeam {
     private final TeamRepository teamRepository;
-    private final DomainEventEmitter rabbitMQPlayerTransferredProducer;
 
+    @EventSubscriber
     public void execute(UUID playerId, UUID teamIdOfPlayer, UUID teamIdAcquiringPlayer) {
         Team currentTeamOfPlayer = teamRepository.fetch(teamIdOfPlayer)
                 .orElseThrow(() -> new TeamDoesNotExistException(String.format("There is no team with id %s", teamIdOfPlayer)));
@@ -32,10 +32,5 @@ public class TransferPlayerToTeam {
         newTeamOfPlayer.releasePlayer(playerToBeTransferred);
 
         teamRepository.saveAll(asList(currentTeamOfPlayer, newTeamOfPlayer));
-        rabbitMQPlayerTransferredProducer.emit(PlayerTransferred.builder()
-                .playerId(playerId)
-                .teamId(teamIdAcquiringPlayer)
-                .quantity(playerToBeTransferred.getSalary().getQuantity())
-                .build());
     }
 }

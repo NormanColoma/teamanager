@@ -1,16 +1,21 @@
 package com.normancoloma.management.domain.model.team.player;
 
-import lombok.AllArgsConstructor;
+import com.normancoloma.management.domain.model.team.DomainEvent;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Builder
 @Data
-@AllArgsConstructor
-public class PlayerTransferred {
+public class PlayerTransferred implements DomainEvent {
     private UUID playerId;
     private UUID teamId;
     private float quantity;
+
+    @Override
+    public Date occurredOn() {
+        return new Date();
+    }
 }

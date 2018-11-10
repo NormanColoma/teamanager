@@ -32,4 +32,8 @@ public class Player {
     public void changeSalary(float salary) {
         this.salary.setQuantity(salary);
     }
+
+    public float salary() {
+        return salary.getQuantity();
+    }
 }
