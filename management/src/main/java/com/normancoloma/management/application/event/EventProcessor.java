@@ -1,8 +1,8 @@
 package com.normancoloma.management.application.event;
 
 import com.normancoloma.management.domain.model.team.DomainEvent;
-import com.normancoloma.management.domain.model.team.DomainEventSubscriber;
 import com.normancoloma.management.domain.model.team.DomainEventEmitter;
+import com.normancoloma.management.domain.model.team.DomainEventSubscriber;
 import com.normancoloma.management.domain.model.team.player.PlayerTransferred;
 import com.normancoloma.management.port.adapter.messages.RabbitMQProducer;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,7 @@ public class EventProcessor {
 
     @Before("@annotation(com.normancoloma.management.application.event.EventSubscriber)")
     public void listen() {
+
         DomainEventEmitter
             .instance()
             .subscribe(new DomainEventSubscriber<PlayerTransferred>() {
