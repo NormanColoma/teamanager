@@ -9,8 +9,7 @@ import java.util.UUID;
 
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class GenerateTransferTransactionCommand {
     private UUID playerId;
     private UUID teamId;
