@@ -35,7 +35,7 @@ public class DomainEventEmitter {
     }
 
 
-    public void publish(DomainEvent domainEvent){
+    void publish(DomainEvent domainEvent){
         asList(support.getPropertyChangeListeners())
             .forEach(listener -> {
                 if (isSubscribedToEvent(((DomainEventSubscriber) listener).subscribedTo(), domainEvent.getClass())) {
