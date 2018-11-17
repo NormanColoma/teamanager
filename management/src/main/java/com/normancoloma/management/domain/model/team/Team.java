@@ -52,6 +52,19 @@ public class Team {
         playerFound.setShirtNumber(shirtNumber);
     }
 
+    public void changePlayerSalary(UUID playerId, float newSalaryOfPlayer) {
+        Player playerFound = getPlayer(playerId);
+
+        if (newSalaryOfPlayer > getFunds().getQuantity() * 0.2) {
+            throw new TeamCannotAffordMoreExpenses(String.format("Team %s cannot afford more expenses", id.toString()));
+        }
+
+        float expenses = newSalaryOfPlayer - playerFound.getSalary().getQuantity();
+        playerFound.changeSalary(newSalaryOfPlayer);
+
+        addExpenses(expenses);
+    }
+
 
     public Player getPlayer(UUID playerId) {
         return players.stream()
