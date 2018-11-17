@@ -15,6 +15,8 @@ import com.normancoloma.management.port.adapter.rest.request.TransferPlayerReque
 import com.normancoloma.management.port.adapter.rest.response.PlayerResponse;
 import com.normancoloma.management.port.adapter.rest.response.TeamResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,24 +59,30 @@ public class TeamController {
     }
 
     @PostMapping(value = "teams/{teamId}/transfers")
-    public void transferPlayer(@PathVariable("teamId") UUID teamId,
+    public ResponseEntity transferPlayer(@PathVariable("teamId") UUID teamId,
                                @RequestBody TransferPlayerRequest transferPlayerRequest) {
 
         transferPlayerToTeam.execute(transferPlayerRequest.getPlayerToBeTransferred(), teamId, transferPlayerRequest.getTeamAcquiringPlayer());
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(value = "teams/{teamId}/players/{playerId}/shirtNumbers")
-    public void changeShirtNumberForPlayer(@PathVariable("teamId") UUID teamId,
+    public ResponseEntity changeShirtNumberForPlayer(@PathVariable("teamId") UUID teamId,
                                            @PathVariable("playerId") UUID playerId,
                                            @RequestBody ChangeShirtNumberRequest changeShirtNumberRequest) {
 
         changeShirtNumberOfAPlayer.execute(teamId, playerId, changeShirtNumberRequest.getNumber());
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(value = "teams/{teamId}/players/{playerId}/salary")
-    public void changePlayerSalary(@PathVariable("teamId") UUID teamId,
-                                   @PathVariable("playerId") UUID playerId,
-                                   @RequestBody ChangePlayerSalaryRequest changePlayerSalaryRequest) {
+    @PutMapping(value = "teams/{teamId}/players/{playerId}/salaries")
+    public ResponseEntity changePlayerSalary(@PathVariable("teamId") UUID teamId,
+                                             @PathVariable("playerId") UUID playerId,
+                                             @RequestBody ChangePlayerSalaryRequest changePlayerSalaryRequest) {
         changePlayerSalary.execute(teamId, playerId, changePlayerSalaryRequest.getSalary());
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
