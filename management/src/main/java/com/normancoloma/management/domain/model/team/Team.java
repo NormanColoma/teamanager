@@ -7,7 +7,6 @@ import com.normancoloma.management.domain.exception.ShirtNumberIsAlreadyTakenExc
 import com.normancoloma.management.domain.exception.TeamCannotAffordMoreExpenses;
 import com.normancoloma.management.domain.model.team.player.Player;
 import com.normancoloma.management.domain.model.team.player.PlayerTransferred;
-import com.normancoloma.management.domain.model.team.player.Salary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
